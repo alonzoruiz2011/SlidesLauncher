@@ -1,0 +1,15 @@
+[build]
+  publish = "."
+  command = ""
+
+[[redirects]]
+  from = "/slides/redirect/:id"
+  to = "https://docs.google.com/presentation/d/:id/embed"
+  status = 302
+  force = false
+
+# SPA fallback
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

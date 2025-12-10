@@ -1,0 +1,6 @@
+# Redirect /slides/redirect/:id -> Google Slides embed (302 redirect)
+# Example usage: https://your-site.netlify.app/slides/redirect/<ID>
+/slides/redirect/:id   https://docs.google.com/presentation/d/:id/embed   302
+
+# SPA fallback — serve index.html for unknown paths (keep after redirects)
+/*    /index.html   200

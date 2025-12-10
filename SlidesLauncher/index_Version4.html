@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Slides Launcher</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="header">
+    <h1>Slides Launcher</h1>
+    <p class="sub">Click a tile to open a presentation or paste an ID/URL below.</p>
+  </header>
+
+  <main class="grid-wrap">
+    <div id="grid" class="grid" aria-live="polite"></div>
+
+    <section class="card manual">
+      <h2>Open by ID or URL</h2>
+      <p>Paste a Slides ID or full Slides URL and open in viewer.</p>
+      <input id="inputId" placeholder="ID or full Slides URL" aria-label="Slides ID or URL">
+      <div class="controls">
+        <button id="openViewer">Open in Viewer</button>
+        <button id="openGoogle">Open on Google</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <small>Static Slides Viewer — hosts on Netlify / GitHub Pages. Uses official Google Slides embed.</small>
+  </footer>
+
+<script>
+// Tiles you want shown on the launcher. Replace IDs/URLs as needed.
+const tiles = [
+  { title: "Presentation A", url: "viewer.html?id=1sxOmMUTZGMAAdKtajGABp_veOrx49lgoR8OjGRf9Tyw", icon: "" },
+  { title: "Presentation A (Google)", url: "https://docs.google.com/presentation/d/1sxOmMUTZGMAAdKtajGABp_veOrx49lgoR8OjGRf9Tyw/embed", icon: "" }
+  // Add more tiles here...
+];
+
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function tileIconHtml(tile){
+  if(tile.icon) return `<img src="${tile.icon}" alt="${escapeHtml(tile.title)}">`;
+  const letter = escapeHtml((tile.title||'?').charAt(0).toUpperCase());
+  return `<div class="badge">${letter}</div>`;
+}
+
+const grid = document.getElementById('grid');
+tiles.forEach(t => {
+  const a = document.createElement('a');
+  a.className = 'tile';
+  a.href = t.url;
+  a.target = '_blank';
+  a.rel = 'noopener noreferrer';
+  a.innerHTML = `<div class="tile-icon">${tileIconHtml(t)}</div><div class="tile-title">${escapeHtml(t.title)}</div>`;
+  grid.appendChild(a);
+});
+
+// ID extraction utility
+function extractSlidesId(raw) {
+  if (!raw) return null;
+  raw = raw.trim();
+  const urlMatch = raw.match(/\/d\/([a-zA-Z0-9_-]{10,})/);
+  if (urlMatch && urlMatch[1]) return urlMatch[1];
+  const idLike = raw.match(/^[a-zA-Z0-9_-]{10,}$/);
+  if (idLike) return raw;
+  return null;
+}
+
+document.getElementById('openViewer').addEventListener('click', () => {
+  const raw = document.getElementById('inputId').value.trim();
+  const id = extractSlidesId(raw);
+  if (!id) return alert('Please paste a valid Google Slides ID or URL.');
+  window.location.href = `viewer.html?id=${encodeURIComponent(id)}`;
+});
+
+document.getElementById('openGoogle').addEventListener('click', () => {
+  const raw = document.getElementById('inputId').value.trim();
+  const id = extractSlidesId(raw);
+  if (!id) return alert('Please paste a valid Google Slides ID or URL.');
+  const embed = `https://docs.google.com/presentation/d/${encodeURIComponent(id)}/embed`;
+  window.open(embed, '_blank', 'noopener');
+});
+</script>
+</body>
+</html>

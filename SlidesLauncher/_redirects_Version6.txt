@@ -1,0 +1,7 @@
+# Redirect /slides/redirect/:id  -> Google Slides embed (302 redirect)
+# Use in Slides or tiles like: /slides/redirect/1sxOmMUTZGMAAdKtajGABp_veOrx49lgoR8OjGRf9Tyw
+/slides/redirect/:id   https://docs.google.com/presentation/d/:id/embed   302
+
+# Optional: SPA fallback so unknown paths serve index.html (useful if you're using relative in-app routing)
+# NOTE: keep this after specific redirects to not override them.
+/*    /index.html   200
